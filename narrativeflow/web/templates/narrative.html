@@ -1,0 +1,102 @@
+{% extends "base.html" %}
+{% block title %}{{ n.title }} · NarrativeFlow{% endblock %}
+{% block content %}
+<a href="/" class="back">← Board</a>
+
+<header class="narrative-header">
+  <div>
+    <h1>{{ n.title }}</h1>
+    <p class="one-liner-large">{{ n.one_liner or '(synthesis pending — run the pipeline)' }}</p>
+  </div>
+  <form method="post" action="{{ '/unfollow' if following else '/follow' }}" class="follow-form">
+    <input type="hidden" name="narrative_id" value="{{ n.id }}">
+    <button type="submit" class="{{ 'unfollow' if following else 'follow' }}">
+      {{ 'Unfollow' if following else 'Follow' }}
+    </button>
+  </form>
+</header>
+
+<div class="meta-row">
+  <span class="stage-badge stage-{{ n.lifecycle_stage }}">{{ n.lifecycle_stage }}</span>
+  <span class="heat">heat <strong>{{ '%.2f'|format(n.heat_score) }}</strong></span>
+  <span>{{ n.source_type }}</span>
+  <span>last updated {{ n.last_updated.strftime('%Y-%m-%d %H:%M') }}</span>
+</div>
+
+<section>
+  <h2>Causal chain</h2>
+  {% if n.causal_chain %}
+    <ol class="causal">
+      {% for step in n.causal_chain %}<li>{{ step }}</li>{% endfor %}
+    </ol>
+  {% else %}<p class="muted">No causal chain yet.</p>{% endif %}
+</section>
+
+<section>
+  <h2>Ticker map</h2>
+  {% set buckets = [('Main trade', 'main_trade'), ('Second derivative', 'second_derivative'), ('ETF proxy', 'etf_proxy'), ('HK mirror', 'hk_mirror')] %}
+  <div class="ticker-grid">
+    {% for label, key in buckets %}
+      {% set bucket = n.ticker_map.get(key, []) or [] %}
+      {% if bucket %}
+      <div class="ticker-bucket">
+        <h3>{{ label }}</h3>
+        <ul>
+          {% for t in bucket %}
+          <li><strong>{{ t.ticker }}</strong>{% if t.name %} — {{ t.name }}{% endif %}<div class="ticker-thesis">{{ t.thesis }}</div></li>
+          {% endfor %}
+        </ul>
+      </div>
+      {% endif %}
+    {% endfor %}
+  </div>
+  {% if not (n.ticker_map.get('main_trade') or n.ticker_map.get('second_derivative') or n.ticker_map.get('etf_proxy') or n.ticker_map.get('hk_mirror')) %}
+    <p class="muted">No tickers mapped yet.</p>
+  {% endif %}
+</section>
+
+<section>
+  <h2>Catalysts</h2>
+  {% if n.catalysts %}
+    <ul class="catalysts">
+      {% for c in n.catalysts %}
+      <li><span class="when">{{ c.date_hint or 'TBD' }}</span> · <strong>{{ c.event }}</strong>
+        {% if c.impact %}<span class="impact"> — {{ c.impact }}</span>{% endif %}
+      </li>
+      {% endfor %}
+    </ul>
+  {% else %}<p class="muted">No tracked catalysts.</p>{% endif %}
+</section>
+
+<section>
+  <h2>Counter-narrative</h2>
+  <p class="counter">{{ n.counter_narrative or '(none yet)' }}</p>
+</section>
+
+<section>
+  <h2>Source trail ({{ contents|length }})</h2>
+  <ul class="sources">
+    {% for c in contents %}
+    <li>
+      <span class="src-key">{{ c.source_key }}</span>
+      <span class="when">{{ c.published_at.strftime('%Y-%m-%d') }}</span>
+      <a href="{{ c.url }}" target="_blank" rel="noopener">{{ c.title }}</a>
+    </li>
+    {% endfor %}
+  </ul>
+</section>
+
+<section>
+  <h2>State changes</h2>
+  {% if state_changes %}
+  <ul class="state-changes">
+    {% for s in state_changes %}
+    <li><span class="when">{{ s.occurred_at.strftime('%Y-%m-%d %H:%M') }}</span>
+      <span class="ctype ctype-{{ s.change_type }}">{{ s.change_type }}</span>
+      {{ s.description }}
+    </li>
+    {% endfor %}
+  </ul>
+  {% else %}<p class="muted">No state changes recorded.</p>{% endif %}
+</section>
+{% endblock %}

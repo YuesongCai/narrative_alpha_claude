@@ -3,31 +3,45 @@ requires = ["setuptools>=68", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "narrative-alpha"
+name = "narrativeflow"
 version = "0.1.0"
-description = "Narrative Alpha — a narrative lifecycle tracker for alpha discovery"
+description = "Narrative-Driven Investment Intelligence System"
+readme = "README.md"
 requires-python = ">=3.10"
-authors = [{ name = "Aaron Cai" }]
+authors = [{ name = "Aaron" }]
 license = { text = "Proprietary" }
 dependencies = [
     "anthropic>=0.40.0",
-    "feedparser>=6.0.10",
-    "jinja2>=3.1.2",
+    "sqlalchemy>=2.0",
+    "fastapi>=0.110",
+    "uvicorn[standard]>=0.27",
+    "jinja2>=3.1",
+    "python-multipart>=0.0.9",
+    "httpx>=0.27",
     "python-dateutil>=2.8.2",
+    "pydantic>=2.6",
+    "pydantic-settings>=2.2",
+    "click>=8.1",
+    "PyYAML>=6.0",
 ]
 
 [project.optional-dependencies]
-prices = ["yfinance>=0.2.40"]
-dev = ["pytest>=7.4"]
+postgres = ["psycopg[binary]>=3.1"]
+dev = ["pytest>=7.4", "pytest-asyncio>=0.23"]
 
 [project.scripts]
-narrative-alpha = "narrative_alpha.cli:main"
+narrativeflow = "narrativeflow.cli:cli"
 
 [tool.setuptools.packages.find]
-include = ["narrative_alpha*"]
+include = ["narrativeflow*"]
 
 [tool.setuptools.package-data]
-narrative_alpha = ["templates/*.html", "data/*.json"]
+narrativeflow = [
+    "web/templates/*.html",
+    "web/static/*",
+    "data/*.json",
+    "data/*.yaml",
+]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

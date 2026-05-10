@@ -1,0 +1,52 @@
+# Public information sources shipped by default.
+# Edit this file to add new feeds; no code change required.
+#
+# `kind` selects the adapter; remaining keys are adapter-specific.
+
+sources:
+  # ---- General markets / business news (free public RSS) ----
+  - kind: rss
+    key: bbc_business
+    name: BBC Business
+    url: https://feeds.bbci.co.uk/news/business/rss.xml
+    language: en
+
+  - kind: rss
+    key: yahoo_finance
+    name: Yahoo Finance — top headlines
+    url: https://finance.yahoo.com/news/rssindex
+    language: en
+
+  - kind: rss
+    key: ft_companies
+    name: FT — Companies (public RSS)
+    url: https://www.ft.com/companies?format=rss
+    language: en
+
+  - kind: rss
+    key: cnbc_finance
+    name: CNBC Finance
+    url: https://search.cnbc.com/rs/search/combinedcms/view.xml?partnerId=wrss01&id=10000664
+    language: en
+
+  - kind: rss
+    key: marketwatch_topstories
+    name: MarketWatch — Top Stories
+    url: https://feeds.marketwatch.com/marketwatch/topstories/
+    language: en
+
+  # ---- Tech / AI sources (high-signal for AI infra narratives) ----
+  - kind: hackernews
+    key: hackernews
+    top_n: 30
+
+  - kind: rss
+    key: techcrunch
+    name: TechCrunch
+    url: https://techcrunch.com/feed/
+    language: en
+
+  # ---- Primary regulatory / filings ----
+  - kind: sec_edgar
+    key: sec_edgar_8k
+    form_type: 8-K

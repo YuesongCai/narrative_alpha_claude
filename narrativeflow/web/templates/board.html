@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block title %}Narrative Board · NarrativeFlow{% endblock %}
+{% block content %}
+<h1>Narrative Board</h1>
+<p class="muted">Public-source narratives, ranked by lifecycle stage and heat.
+Follow what matters; updates appear here automatically.</p>
+
+{% for stage in stage_order %}
+  {% if grouped[stage] %}
+  <section class="stage-section stage-{{ stage }}">
+    <h2><span class="stage-badge stage-{{ stage }}">{{ stage }}</span> · {{ grouped[stage]|length }} narratives</h2>
+    <div class="cards">
+      {% for n in grouped[stage] %}
+      <a class="card" href="/narratives/{{ n.id }}">
+        <div class="card-head">
+          <span class="title">{{ n.title }}</span>
+          {% if n.id in followed_ids %}<span class="follow-pill">following</span>{% endif %}
+        </div>
+        <div class="one-liner">{{ n.one_liner or '(synthesis pending)' }}</div>
+        <div class="card-meta">
+          <span class="heat">heat {{ '%.2f'|format(n.heat_score) }}</span>
+          <span class="src-type">{{ n.source_type }}</span>
+          {% set tickers = [] %}
+          {% for t in n.ticker_map.get('main_trade', []) %}
+            {% if loop.index <= 3 %}{% set _ = tickers.append(t.ticker) %}{% endif %}
+          {% endfor %}
+          {% if tickers %}<span class="tickers">{{ tickers|join(' · ') }}</span>{% endif %}
+        </div>
+      </a>
+      {% endfor %}
+    </div>
+  </section>
+  {% endif %}
+{% endfor %}
+
+{% set total = grouped.values()|map('length')|sum %}
+{% if total == 0 %}
+  <div class="empty">
+    <p>No narratives yet. Run <code>narrativeflow ingest && narrativeflow synthesize</code> to populate.</p>
+  </div>
+{% endif %}
+{% endblock %}

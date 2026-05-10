@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block title %}Search · NarrativeFlow{% endblock %}
+{% block content %}
+<h1>Search</h1>
+
+{% if not q %}
+  <p class="muted">Type a theme into the box above — e.g. <em>AI infra</em>, <em>核电</em>, <em>GLP-1 supply chain</em>.</p>
+{% else %}
+  {% if match and match.match_id %}
+    <div class="ai-suggest">
+      🤖 AI matched your query to one narrative ({{ '%.0f'|format(match.confidence * 100) }}% confidence).
+      <a href="/narratives/{{ match.match_id }}">Open it →</a>
+    </div>
+  {% elif match and match.should_create_new %}
+    <div class="ai-suggest">
+      🤖 No existing narrative matches. AI suggests creating: <strong>{{ match.suggested_title }}</strong>.
+      <span class="muted">(In V1 you can submit content via <code>narrativeflow submit</code>.)</span>
+    </div>
+  {% endif %}
+
+  <h2>Lexical matches ({{ results|length }})</h2>
+  {% if results %}
+  <div class="cards">
+    {% for n in results %}
+    <a class="card" href="/narratives/{{ n.id }}">
+      <div class="card-head">
+        <span class="title">{{ n.title }}</span>
+        <span class="stage-badge stage-{{ n.lifecycle_stage }}">{{ n.lifecycle_stage }}</span>
+      </div>
+      <div class="one-liner">{{ n.one_liner }}</div>
+    </a>
+    {% endfor %}
+  </div>
+  {% else %}
+  <p class="muted">No lexical matches.</p>
+  {% endif %}
+{% endif %}
+{% endblock %}

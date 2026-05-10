@@ -1,94 +1,96 @@
-"""End-to-end pipeline using the bundled seed corpus."""
+"""End-to-end pipeline against the bundled seed corpus, with AI disabled."""
 
 from datetime import datetime
 from pathlib import Path
 
+import json
 import pytest
 
-from narrative_alpha.digest import render_html, render_terminal
-from narrative_alpha.ingest import load_seed_file, submit_manual
-from narrative_alpha.models import Stage
-from narrative_alpha.pipeline import run_pipeline
-from narrative_alpha.store import Store
+from narrativeflow.models import LifecycleStage
+from narrativeflow.pipeline import run_pipeline
+from narrativeflow.pipeline.ingest import ingest_from
+from narrativeflow.sources.manual import ManualSource
+from narrativeflow.store import NarrativeRepo, ContentRepo, get_session
 
 
-SEED = Path(__file__).resolve().parent.parent / "data" / "seed_sources.json"
+SEED_PATH = Path(__file__).resolve().parent.parent / "narrativeflow" / "data" / "seed_content.json"
 
 
-@pytest.fixture
-def store(tmp_path) -> Store:
-    s = Store(tmp_path)
-    s.load()
-    load_seed_file(s, SEED)
-    return s
+def _seed_adapters():
+    items = json.loads(SEED_PATH.read_text(encoding="utf-8"))
+    out = []
+    for it in items:
+        a = ManualSource(
+            title=it["title"],
+            body=it["body"],
+            url=it.get("url"),
+            author=it.get("author"),
+            external_id=it.get("external_id"),
+            published_at=datetime.fromisoformat(it["published_at"]) if it.get("published_at") else None,
+        )
+        a.key = "seed"
+        a.name = "Seed corpus"
+        out.append(a)
+    return out
 
 
-def test_pipeline_produces_narratives_and_digest(store):
-    today = datetime(2026, 4, 28, 12, 0, 0)
-    report = run_pipeline(store, today=today)
+def test_full_pipeline_ingests_filters_tags_synthesizes():
+    counts = ingest_from(_seed_adapters())
+    assert counts["seed"] >= 10  # 10 real signals + 2 noise items
 
-    assert report.sources_processed == len(store.sources)
-    assert len(store.active_narratives()) >= 3
-    assert report.digest is not None
-
-    digest = report.digest
-    assert digest.digest_date == today.date()
-    assert sum(digest.counts.values()) >= 3
+    report = run_pipeline(skip_ingest=True)
+    # Noise filter should catch the sponsored ad and the horoscope.
+    assert report.filtered["filtered"] >= 2
+    assert report.tagged["new_narratives"] >= 3
+    assert report.synthesized["synthesized"] >= 3
 
 
-def test_digest_orders_emerging_first(store):
-    run_pipeline(store, today=datetime(2026, 4, 28))
-    digest = store.latest_digest()
-    stages = [store.narratives[nid].stage for nid in digest.narrative_ids]
+def test_pipeline_produces_narratives_with_ticker_maps():
+    ingest_from(_seed_adapters())
+    run_pipeline(skip_ingest=True)
 
-    indices = [Stage.order_index(s) for s in stages]
-    assert indices == sorted(indices), f"digest order should be Emerging→Strengthening→Consensus, got {stages}"
-
-
-def test_html_renders_without_template_placeholders(store):
-    run_pipeline(store, today=datetime(2026, 4, 28))
-    digest = store.latest_digest()
-    html = render_html(store, digest)
-    assert "{{" not in html and "}}" not in html
-    assert "Narrative Alpha" in html
+    with get_session() as session:
+        narratives = NarrativeRepo(session).list_active(limit=20)
+        assert len(narratives) >= 3
+        # At least one narrative should have surfaced tickers via the heuristic.
+        any_with_tickers = any(
+            (n.ticker_map.get("main_trade") or [])
+            for n in narratives
+        )
+        assert any_with_tickers, "expected at least one narrative with main-trade tickers"
 
 
-def test_terminal_render_smoke(store):
-    run_pipeline(store, today=datetime(2026, 4, 28))
-    text = render_terminal(store, store.latest_digest())
-    assert "NARRATIVE ALPHA" in text
-    assert "strength" in text
+def test_pipeline_assigns_lifecycle_stages():
+    ingest_from(_seed_adapters())
+    run_pipeline(skip_ingest=True)
+
+    with get_session() as session:
+        narratives = NarrativeRepo(session).list_active(limit=20)
+        valid_stages = {s.value for s in LifecycleStage}
+        for n in narratives:
+            assert n.lifecycle_stage in valid_stages
+            assert 0.0 <= n.heat_score <= 1.0
 
 
-def test_user_submitted_source_feeds_pipeline(store):
-    run_pipeline(store, today=datetime(2026, 4, 28))
-    pre_count = len(store.active_narratives())
-
-    submit_manual(
-        store,
-        title="Humanoid Robotics: Tesla Optimus production curve",
-        org="Bernstein",
-        body="Bernstein research note arguing humanoid robotics manufacturing is entering a learning-curve phase. "
-             "Tesla Optimus production targets imply per-unit cost trajectory that re-rates the entire humanoid robotics "
-             "supply chain. Actuator vendors and reduction-gear specialists are the supply-chain beneficiaries.",
-        url="https://example.com/bernstein-humanoid",
-    )
-    report = run_pipeline(store, today=datetime(2026, 4, 29))
-    # The new source should produce at least one new narrative.
-    assert len(store.active_narratives()) >= pre_count + 1
-    assert report.sources_processed == 1
+def test_pipeline_is_idempotent():
+    ingest_from(_seed_adapters())
+    run_pipeline(skip_ingest=True)
+    with get_session() as session:
+        first_count = ContentRepo(session).count()
+    # Running again should not add new content (dedup by external_id).
+    ingest_from(_seed_adapters())
+    with get_session() as session:
+        second_count = ContentRepo(session).count()
+    assert first_count == second_count
 
 
-def test_round_trip_through_disk(store, tmp_path):
-    run_pipeline(store, today=datetime(2026, 4, 28))
-    store.save()
-    nar_count = len(store.narratives)
-    src_count = len(store.sources)
+def test_noise_items_excluded_from_narratives():
+    ingest_from(_seed_adapters())
+    run_pipeline(skip_ingest=True)
 
-    re = Store(store.data_dir).load()
-    assert len(re.narratives) == nar_count
-    assert len(re.sources) == src_count
-
-    # Re-running should be idempotent (no new sources to process).
-    report = run_pipeline(re, today=datetime(2026, 4, 28))
-    assert report.sources_processed == 0
+    with get_session() as session:
+        narratives = NarrativeRepo(session).list_active(limit=20)
+        for n in narratives:
+            for c in NarrativeRepo(session).contents_for(n.id):
+                assert "horoscope" not in c.title.lower()
+                assert "sponsored" not in c.title.lower()

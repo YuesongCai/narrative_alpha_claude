@@ -7,5 +7,7 @@ dist/
 .pytest_cache/
 .venv/
 venv/
-
-data/state.json
+.env
+*.db
+*.db-journal
+data/narrativeflow.db

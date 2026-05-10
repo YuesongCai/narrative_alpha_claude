@@ -1,0 +1,103 @@
+[
+  {
+    "title": "AI inference cost is collapsing — and the real winners are picks-and-shovels names",
+    "body": "Inference cost per token has fallen roughly 4x in eighteen months as connectivity overhead and memory bandwidth bottlenecks are engineered out of the stack. The story is not that GPUs are cheaper — they aren't. It is that data-center fabric, custom silicon, and second-source GPU vendors capture a disproportionate share of the unit economics improvement. Companies like Credo Technology (CRDO), Arista Networks (ANET) and AMD are the cleanest beneficiaries.",
+    "url": "https://example.com/ai-inference-deflation",
+    "author": "markets-research",
+    "published_at": "2026-05-08T10:00:00",
+    "external_id": "seed-ai-inference-1"
+  },
+  {
+    "title": "Inference economics flip favorable as model architectures evolve",
+    "body": "Three frontier-model engineering leads independently described inference cost compression as the dominant driver of AI infrastructure investment in 2026. The bull case: cost deflation expands TAM rather than compressing margins because elasticity of demand exceeds 1 at current price points. AMD MI-series and second-tier GPU diversification become a credible second narrative beneath the NVDA story.",
+    "url": "https://example.com/inference-economics",
+    "author": "thesis-deck",
+    "published_at": "2026-05-09T08:00:00",
+    "external_id": "seed-ai-inference-2"
+  },
+
+  {
+    "title": "Japan semiconductor reindustrialization enters its second leg",
+    "body": "Tokyo Electron reported a record backlog driven by domestic demand from Rapidus and overseas customers expanding their Japanese footprint. Suppliers including Advantest and Shin-Etsu Chemical are signaling similar order momentum. Yen weakness combined with subsidy-driven capex is producing a multi-year structural cycle in WFE demand for Japanese kit.",
+    "url": "https://example.com/japan-semis",
+    "author": "asia-markets",
+    "published_at": "2026-05-04T07:30:00",
+    "external_id": "seed-japan-1"
+  },
+  {
+    "title": "Why Japan is back on the semiconductor map",
+    "body": "After three decades of decline, Japanese semiconductor manufacturing is in the middle of a deliberate, state-backed reindustrialization. Rapidus' 2nm pilot line in Hokkaido, TSMC's expansion in Kumamoto, and a broader supply-chain ecosystem (Tokyo Electron, Advantest, Shin-Etsu Chemical) are converging into a coherent industrial policy outcome. Earnings calls from TSMC have started referencing Japan capacity expansion, marking lagging mainstream acknowledgment.",
+    "url": "https://example.com/japan-fabs",
+    "author": "industrial-policy",
+    "published_at": "2026-05-06T03:00:00",
+    "external_id": "seed-japan-2"
+  },
+
+  {
+    "title": "Nuclear renaissance: SMR commercialization timelines compress on hyperscaler demand",
+    "body": "Hyperscaler power demand combined with grid-stability constraints is collapsing SMR commercialization timelines. BWXT, the sole US naval-grade reactor component manufacturer, is the cleanest leveraged play. Cameco benefits from the front end of the fuel cycle. Vistra Energy owns operating nuclear capacity that has become the scarcest asset class on the grid as Amazon, Microsoft and Meta sign multi-year power-purchase agreements.",
+    "url": "https://example.com/nuclear-smr",
+    "author": "energy-thesis",
+    "published_at": "2026-04-25T08:00:00",
+    "external_id": "seed-nuclear-1"
+  },
+  {
+    "title": "Hyperscalers sign first nuclear PPAs as AI training and inference push power demand",
+    "body": "Amazon, Microsoft, and Meta have each announced multi-year power-purchase agreements with operators of existing nuclear plants. The shift reflects rising data-center power requirements, particularly for AI training and inference, and the inability of intermittent renewable sources alone to meet round-the-clock demand at the scale required. Vistra Energy and Constellation Energy have led nuclear-exposed equities higher this year.",
+    "url": "https://example.com/nuclear-ppa",
+    "author": "energy-news",
+    "published_at": "2026-04-28T06:30:00",
+    "external_id": "seed-nuclear-2"
+  },
+
+  {
+    "title": "GLP-1 second-line entrants gain ground as Lilly and Novo struggle to keep up with demand",
+    "body": "With Eli Lilly and Novo Nordisk's GLP-1 supply persistently constrained, second-line entrants like Viking Therapeutics' VK2735 are positioned to capture meaningful share. Phase 2 dual-agonist data has been competitive on weight loss and tolerability. The obesity drug narrative is shifting from a Lilly-Novo duopoly story to a multi-entrant supply-chain story, with pharmacogenomics names benefiting from polypharmacy concerns.",
+    "url": "https://example.com/glp1",
+    "author": "biotech-research",
+    "published_at": "2026-05-02T09:00:00",
+    "external_id": "seed-glp1-1"
+  },
+  {
+    "title": "Oral GLP-1 formulations: the next leg of the obesity drug trade",
+    "body": "Pfizer's danuglipron stalling in Phase 3 was a setback, but oral GLP-1s remain the holy grail. Whoever lands a tolerable oral formulation first re-rates immediately. Viking Therapeutics' oral program is ahead of the field on tolerability. The injectable market is approaching saturation; oral formulations open a fundamentally larger TAM.",
+    "url": "https://example.com/oral-glp1",
+    "author": "pharma-thesis",
+    "published_at": "2026-05-07T14:30:00",
+    "external_id": "seed-glp1-2"
+  },
+
+  {
+    "title": "Copper supercycle revisited: structural deficit looks increasingly likely",
+    "body": "Copper has all the ingredients of a supercycle: a structural deficit driven by electrification, AI data center buildouts, and grid investment, against a backdrop of multi-year underinvestment in mine supply. Freeport-McMoRan, Southern Copper, and Antofagasta are the obvious beneficiaries. Copper inventories at LME warehouses continue to draw down. Chilean and Peruvian production has been consistently below expectations.",
+    "url": "https://example.com/copper",
+    "author": "metals-thesis",
+    "published_at": "2026-05-01T10:00:00",
+    "external_id": "seed-copper-1"
+  },
+  {
+    "title": "Why the copper trade has more room than the consensus thinks",
+    "body": "Despite a 40% rally in copper this year, positioning data suggests the trade is less crowded than headline coverage implies. Long copper through Freeport (FCX) or via the Global X Copper Miners ETF (COPX) remains the cleanest exposure. The bear case — China demand softness — is increasingly priced in, while the structural deficit story is still under-appreciated.",
+    "url": "https://example.com/copper-trade",
+    "author": "commodities-desk",
+    "published_at": "2026-05-08T11:00:00",
+    "external_id": "seed-copper-2"
+  },
+
+  {
+    "title": "[Sponsored] Get 50% off luxury skincare — limited time only!",
+    "body": "Premium anti-aging serum with collagen boosters. Use code BEAUTY50 at checkout. Free shipping on orders over $30. Limited stock available. Reviews from celebrity influencers are glowing.",
+    "url": "https://example.com/skincare-promo",
+    "author": "ad-bot",
+    "published_at": "2026-05-09T12:00:00",
+    "external_id": "seed-noise-1"
+  },
+  {
+    "title": "Daily horoscope: what the stars say about your love life",
+    "body": "Aries, today is a great day for romance. Taurus, communication will be key. Gemini, expect a surprise. The cosmic alignment favors emotional connection across all signs. Read your full horoscope for detailed predictions.",
+    "url": "https://example.com/horoscope",
+    "author": "horoscope-bot",
+    "published_at": "2026-05-09T07:00:00",
+    "external_id": "seed-noise-2"
+  }
+]
